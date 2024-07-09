@@ -12,11 +12,6 @@ from langchain.schema import SystemMessage, HumanMessage
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 serper_api_key = st.secrets["SERPER_API_KEY"]
 
-'''
-st.title("Searching Whale")
-st.image("Whale.png", width=300)
-'''
-
 # Define SerperApiSearchResults class
 class SerperApiSearchResults:
     def __init__(self, api_key, num_results=5):
