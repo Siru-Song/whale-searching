@@ -5,8 +5,8 @@ from langchain import LangChain
 from langchain.react import ReAct
 
 # Set API keys
-openai.api_key = 'YOUR_OPENAI_API_KEY'
-serper_api_key = 'YOUR_SERPER_API_KEY'
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+serper_api_key = st.secrets["SERPER_API_KEY"]
 
 # Initialize LangChain
 react = ReAct()
@@ -31,7 +31,7 @@ def openai_query(prompt):
     return response.choices[0].text.strip()
 
 def main():
-    st.title("Streamlit App with OpenAI and Serper API")
+    st.title("Searching Whale")
     
     # Input from user
     user_input = st.text_input("Enter your query:")
