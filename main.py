@@ -3,9 +3,9 @@ import openai
 import requests
 import os
 from langchain.chains import LLMChain, SimpleSequentialChain
-from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.tools import Tool
+from langchain_openai import ChatOpenAI
 
 # Set API keys
 openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -43,14 +43,15 @@ serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 
 # Define the OpenAI query function
 def openai_query(prompt, model="gpt-3.5-turbo"):
-    response = openai.ChatCompletion.create(
-        model=model,
+    chat_openai = ChatOpenAI(model=model, api_key=openai.api_key)
+    response = chat_openai.chat_completion(
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ]
     )
-    return response.choices[0]['message']['content'].strip()
+    return response['choices'][0]['message']['content'].strip()
+
 
 def main():
     st.title("Searching Whale")
