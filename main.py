@@ -55,7 +55,11 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
             {"role": "user", "content": prompt}
         ]
     )
-    return response['choices'][0]['message']['content'].strip()
+    # Check if 'choices' is in response and it contains at least one item
+    if 'choices' in response and len(response['choices']) > 0:
+        return response['choices'][0]['message']['content'].strip()
+    else:
+        raise ValueError("Unexpected response format: {}".format(response))
 
 def main():
     st.title("Searching Whale")
