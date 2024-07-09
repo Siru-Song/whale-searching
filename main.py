@@ -50,7 +50,7 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
             {"role": "user", "content": prompt}
         ]
     )
-    return response.choices[0].message['content'].strip()
+    return response.choices[0]['message']['content'].strip()
 
 def main():
     st.title("Searching Whale")
