@@ -6,6 +6,7 @@ from langchain.chains import LLMChain, SimpleSequentialChain
 from langchain.prompts import PromptTemplate
 from langchain.tools import Tool
 from langchain_openai import ChatOpenAI
+from langchain.schema import SystemMessage, HumanMessage
 
 # Set API keys
 openai.api_key = st.secrets["OPENAI_API_KEY"]
