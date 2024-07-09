@@ -24,7 +24,7 @@ def serper_search(query):
 
 def openai_query(prompt):
     response = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",
         prompt=prompt,
         max_tokens=150
     )
