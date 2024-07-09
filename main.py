@@ -49,15 +49,14 @@ serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 # Define the OpenAI query function
 def openai_query(prompt, model="gpt-3.5-turbo"):
     chat_openai = ChatOpenAI(model=model, openai_api_key=openai.api_key)
-    response = chat_openai.generate(
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    # Check if 'choices' is in response and it contains at least one item
-    if 'choices' in response and len(response['choices']) > 0:
-        return response['choices'][0]['message']['content'].strip()
+    messages = [
+        [SystemMessage(content="You are a helpful assistant."), HumanMessage(content=prompt)]
+    ]
+    response = chat_openai.generate(messages=messages)
+    
+    # Check if 'generations' is in response and it contains at least one item
+    if hasattr(response, 'generations') and len(response.generations) > 0:
+        return response.generations[0][0].text.strip()
     else:
         raise ValueError("Unexpected response format: {}".format(response))
 
