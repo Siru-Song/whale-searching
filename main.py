@@ -2,10 +2,10 @@ import streamlit as st
 import openai
 import requests
 import os
-from langchain import LangChain
-from langchain.react import ReAct
-from langchain.chains import SequentialChain
+from langchain.chains import LLMChain, SimpleSequentialChain
+from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
+from langchain.retrievers import Tool
 
 # Set API keys
 openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -41,9 +41,7 @@ class SerperApiSearchResults:
 # Initialize Serper API
 serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 
-# Initialize LangChain
-react = ReAct()
-
+# Define the OpenAI query function
 def openai_query(prompt, model="gpt-3.5-turbo"):
     response = openai.ChatCompletion.create(
         model=model,
@@ -55,7 +53,8 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
     return response.choices[0].message['content'].strip()
 
 def main():
-    st.title("Streamlit App with OpenAI and Serper API")
+    st.title("Searching Whale")
+    st.image("Whale.png", width=300)
     
     # Input from user
     user_input = st.text_input("Enter your query:")
@@ -75,12 +74,16 @@ def main():
             st.write(result['link'])
             st.write(result['snippet'])
         
-        # Use ReAct to process the input
-        st.write("**Step 2: Processing Input with ReAct...**")
-        react_result = react.process(user_input)
-        st.write(f"ReAct Output: {react_result}")
+        # Use LangChain to process the input
+        st.write("**Step 2: Processing Input...**")
+        llm = OpenAI(model="gpt-3.5-turbo", openai_api_key=openai.api_key)
+        prompt = PromptTemplate(template="{input}", input_variables=["input"])
+        chain = LLMChain(llm=llm, prompt=prompt)
         
-        # Query OpenAI API with ReAct result
+        react_result = chain.run(input=user_input)
+        st.write(f"Chain Output: {react_result}")
+        
+        # Query OpenAI API with chain result
         st.write("**Step 3: Querying OpenAI API...**")
         openai_result = openai_query(react_result)
         
