@@ -52,7 +52,6 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
     )
     return response['choices'][0]['message']['content'].strip()
 
-
 def main():
     st.title("Searching Whale")
     st.image("Whale.png", width=300)
@@ -77,7 +76,7 @@ def main():
         
         # Use LangChain to process the input
         st.write("**Step 2: Processing Input...**")
-        llm = OpenAI(model="gpt-3.5-turbo", openai_api_key=openai.api_key)
+        llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=openai.api_key)
         prompt = PromptTemplate(template="{input}", input_variables=["input"])
         chain = LLMChain(llm=llm, prompt=prompt)
         
