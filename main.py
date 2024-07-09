@@ -51,7 +51,7 @@ serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 def openai_query(prompt, model="gpt-3.5-turbo"):
     chat_openai = ChatOpenAI(model=model, openai_api_key=openai.api_key)
     messages = [
-        [SystemMessage(content="You are a helpful assistant."), HumanMessage(content=f"Given the information: '{prompt}', can you provide a clear and concise conclusion?")]
+        [SystemMessage(content="You are a helpful assistant."), HumanMessage(content=f"Given the information: '{prompt}', can you provide a clear and concise conclusion in korean")]
     ]
     response = chat_openai.generate(messages=messages)
     
