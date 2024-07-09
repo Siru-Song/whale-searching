@@ -1,26 +1,48 @@
 import streamlit as st
 import openai
 import requests
+import os
 from langchain import LangChain
 from langchain.react import ReAct
+from langchain.chains import SequentialChain
+from langchain.prompts import PromptTemplate
 
 # Set API keys
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 serper_api_key = st.secrets["SERPER_API_KEY"]
 
+# Define SerperApiSearchResults class
+class SerperApiSearchResults:
+    def __init__(self, api_key, num_results=5):
+        self.api_key = api_key
+        self.num_results = num_results
+
+    def search(self, query):
+        url = "https://google.serper.dev/search"
+        headers = {
+            "X-API-KEY": self.api_key,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "q": query,
+            "num": self.num_results
+        }
+        response = requests.post(url, json=payload, headers=headers)
+
+        if response.status_code == 200:
+            results = response.json()
+            if 'organic' in results:
+                return results['organic']
+            else:
+                return results
+        else:
+            response.raise_for_status()
+
+# Initialize Serper API
+serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
+
 # Initialize LangChain
 react = ReAct()
-
-def serper_search(query):
-    url = "https://api.serper.dev/search"
-    headers = {
-        "X-API-KEY": serper_api_key
-    }
-    params = {
-        "q": query
-    }
-    response = requests.get(url, headers=headers, params=params)
-    return response.json()
 
 def openai_query(prompt, model="gpt-3.5-turbo"):
     response = openai.ChatCompletion.create(
@@ -33,8 +55,7 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
     return response.choices[0].message['content'].strip()
 
 def main():
-    st.title("Searching Whale")
-    st.image("Whale.png", width=300)
+    st.title("Streamlit App with OpenAI and Serper API")
     
     # Input from user
     user_input = st.text_input("Enter your query:")
@@ -45,11 +66,11 @@ def main():
         
         # Perform Serper search
         st.write("**Step 1: Performing Google Search...**")
-        search_results = serper_search(user_input)
+        search_results = serper_api.search(user_input)
         
         # Display search results
         st.write("### Google Search Results")
-        for result in search_results['organic']:
+        for result in search_results:
             st.write(f"**{result['title']}**")
             st.write(result['link'])
             st.write(result['snippet'])
