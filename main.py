@@ -5,7 +5,7 @@ import os
 from langchain.chains import LLMChain, SimpleSequentialChain
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.retrievers import Tool
+from langchain.tools import Tool
 
 # Set API keys
 openai.api_key = st.secrets["OPENAI_API_KEY"]
