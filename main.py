@@ -44,13 +44,13 @@ serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 # Define the OpenAI query function
 def openai_query(prompt, model="gpt-3.5-turbo"):
     chat_openai = ChatOpenAI(model=model, api_key=openai.api_key)
-    response = chat_openai.chat_completion(
-        messages=[
+    response = chat_openai(messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ]
     )
     return response['choices'][0]['message']['content'].strip()
+
 
 def main():
     st.title("Searching Whale")
