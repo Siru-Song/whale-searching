@@ -11,6 +11,11 @@ from langchain_openai import ChatOpenAI
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 serper_api_key = st.secrets["SERPER_API_KEY"]
 
+'''
+st.title("Searching Whale")
+st.image("Whale.png", width=300)
+'''
+
 # Define SerperApiSearchResults class
 class SerperApiSearchResults:
     def __init__(self, api_key, num_results=5):
@@ -43,7 +48,7 @@ serper_api = SerperApiSearchResults(api_key=serper_api_key, num_results=5)
 
 # Define the OpenAI query function
 def openai_query(prompt, model="gpt-3.5-turbo"):
-    chat_openai = ChatOpenAI(model=model, api_key=openai.api_key)
+    chat_openai = ChatOpenAI(model=model, openai_api_key=openai.api_key)
     response = chat_openai.generate(
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -51,8 +56,6 @@ def openai_query(prompt, model="gpt-3.5-turbo"):
         ]
     )
     return response['choices'][0]['message']['content'].strip()
-
-
 
 def main():
     st.title("Searching Whale")
@@ -78,7 +81,7 @@ def main():
         
         # Use LangChain to process the input
         st.write("**Step 2: Processing Input...**")
-        llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=openai.api_key)
+        llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai.api_key)
         prompt = PromptTemplate(template="{input}", input_variables=["input"])
         chain = LLMChain(llm=llm, prompt=prompt)
         
